@@ -1,33 +1,33 @@
 import { Router } from "express";
-import RecruteurController from '../controllers/recruteur.controller';
+import EntretienController from '../../infrastructure/controllers/entretien.controller';
 
-class RecruteurRoutes {
+class EntretienRoutes {
   router = Router();
-  controller = new RecruteurController();
+  controller = new EntretienController();
 
   constructor() {
     this.intializeRoutes();
   }
 
   intializeRoutes() {
-    // Create a new Recruteur
+    // Create a new Entretien
     this.router.post("/", this.controller.create.bind(this.controller));
 
-    // Retrieve all Recruteurs
+    // Retrieve all Entretiens
     this.router.get("/", this.controller.findAll.bind(this.controller));
 
-    // Retrieve a single Recruteur with id
+    // Retrieve a single Entretien with id
     this.router.get("/:id", this.controller.findOne.bind(this.controller));
 
-    // Update a Recruteur with id
+    // Update a Entretien with id
     this.router.put("/:id", this.controller.update.bind(this.controller));
 
-    // Delete a Recruteur with id
+    // Delete a Entretien with id
     this.router.delete("/:id", this.controller.delete.bind(this.controller));
 
-    // Delete all Recruteurs
+    // Delete all Entretiens
     this.router.delete("/", this.controller.deleteAll.bind(this.controller));
   }
 }
 
-export default new RecruteurRoutes().router;
+export default new EntretienRoutes().router;

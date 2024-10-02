@@ -1,11 +1,20 @@
 import { Op } from "sequelize";
 import Candidat from '../models/candidat.model';
 
+export interface ICandidatRepository {
+  save: (candidat: Candidat) => Promise<Candidat>
+  retrieveById: (candidatId: number) => Promise<Candidat | null>
+  retrieveAll: (searchParams: {email?: string}) => Promise<Candidat[]>
+  update: (candidat: Candidat) => Promise<number>
+  delete: (candidatId: number) => Promise<number>
+  deleteAll: () => Promise<number>
+}
+
 interface SearchCondition {
   [key: string]: any;
 }
 
-class CandidatRepository {
+export class CandidatRepository implements ICandidatRepository{
   async save(candidat: Candidat): Promise<Candidat> {
     try {
       return await Candidat.create({

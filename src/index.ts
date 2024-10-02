@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import cors, { CorsOptions } from "cors";
-import Routes from "./routes";
-import Database from "./db";
+import Database from "./infrastructure/db";
+import Routes from "./infrastructure/routes";
 
 export default class Server {
   constructor(app: Application) {

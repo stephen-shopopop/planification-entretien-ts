@@ -1,8 +1,13 @@
-import Candidat from '../models/candidat.model';
-import candidatRepository from '../repositories/candidat.repository';
-import { Request, Response } from 'express';
+import type Candidat from '../../infrastructure/models/candidat.model';
+import { CandidatRepository, type ICandidatRepository } from '../../infrastructure/repositories/candidat.repository';
+import type { Request, Response } from 'express';
 
 class CandidatService {
+    #candidate: ICandidatRepository
+
+    constructor(readonly candidateRepository: ICandidatRepository){
+        this.#candidate = candidateRepository
+    }
 
     async save(req: Request, res: Response) {
         let isEmailValid: boolean;
@@ -20,30 +25,30 @@ class CandidatService {
 
         const candidat: Candidat = req.body;
 
-        const savedCandidat = await candidatRepository.save(candidat);
+        const savedCandidat = await this.#candidate.save(candidat);
 
         res.status(201).send(savedCandidat);
     }
 
     async retrieveAll(searchParams: { email?: string }): Promise<Candidat[]> {
-        return await candidatRepository.retrieveAll(searchParams);
+        return await this.#candidate.retrieveAll(searchParams);
     }
 
     async retrieveById(candidatId: number): Promise<Candidat | null> {
-        return await candidatRepository.retrieveById(candidatId);
+        return await this.#candidate.retrieveById(candidatId);
     }
 
     async update(candidat: Candidat): Promise<number> {
-        return await candidatRepository.update(candidat);
+        return await this.#candidate.update(candidat);
     }
 
     async delete(candidatId: number): Promise<number> {
-        return await candidatRepository.delete(candidatId);
+        return await this.#candidate.delete(candidatId);
     }
 
     async deleteAll(): Promise<number> {
-        return await candidatRepository.deleteAll();
+        return await this.#candidate.deleteAll();
     }
 }
 
-export default new CandidatService();
+export default new CandidatService(new CandidatRepository());
