@@ -1,8 +1,8 @@
 import { SqlRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
 import { SqlCandidatRepository, type ICandidatRepository } from '../../infrastructure/repositories/candidat.repository';
-import type { Request, Response } from 'express';
-import { IEntretien, type IEntretienRepository, SqlEntretienRepository } from '../../infrastructure/repositories/entretien.repository';
+import { type IEntretien, type IEntretienRepository, SqlEntretienRepository } from '../../infrastructure/repositories/entretien.repository';
 import notificationService from './notification.service';
+import { AppError } from '../../shared/apiError';
 
 class EntretienService {
     constructor(
@@ -11,53 +11,36 @@ class EntretienService {
         private readonly recruteurRepository: IRecruteurRepository
     ) { /** */}
 
-    async create(req: Request, res: Response) {
-        if (req.body.disponibiliteRecruteur != req.body.horaire) {
-            res.status(400).send({
-                message: "Pas les mêmes horaires!"
-            });
-            return;
-        }
-
-        const recruteur = await this.recruteurRepository.retrieveById(req.body.recruteurId);
-        const candidat = await this.candidatRepository.retrieveById(req.body.candidatId);
+    async create(recruteurId: number, candidatId: number, horaire?: string) {
+        const recruteur = await this.recruteurRepository.retrieveById(recruteurId);
+        const candidat = await this.candidatRepository.retrieveById(candidatId);
 
         if (!candidat) {
-            res.status(404).send({
-                message: `Cannot create Entretien with candidat id=${req.body.candidatId}.`
-            });
-            return;
+            throw new AppError(`Cannot create Entretien with candidat id=${candidatId}.`, 404)
         }
 
         if (!recruteur) {
-            res.status(404).send({
-                message: `Cannot create Entretien with recruteur id=${req.body.recruteurId}.`
-            });
-            return;
+            throw new AppError(`Cannot create Entretien with recruteur id=${recruteurId}.`, 404)
         }
 
         if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
-            res.status(400).send({
-                message: "Pas la même techno"
-            });
-            return;
+            throw new AppError("Pas la même techno", 400)
         }
 
         if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
-            res.status(400).send({
-                message: "Recruteur trop jeune"
-            });
-            return;
+            throw new AppError( "Recruteur trop jeune", 400)
         }
 
-        const entretien: IEntretien = req.body;
-
-        const savedEntretien = await this.entretienRepository.save(entretien);
+        const savedEntretien = await this.entretienRepository.save({
+            candidatId,
+            recruteurId,
+            horaire
+        });
 
         await notificationService.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
         await notificationService.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');
 
-        res.status(201).send(savedEntretien);
+        return savedEntretien
     }
 
     async retrieveAll(): Promise<IEntretien[]> {

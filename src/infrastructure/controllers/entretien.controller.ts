@@ -1,16 +1,30 @@
-import { Request, Response } from 'express';
-import SQLEntretien from '../models/entretien.model';
+import type { Request, Response } from 'express';
+import type SQLEntretien from '../models/entretien.model';
 import entretienService from '../../use_case/services/entretien.service';
 import entretienRepository from '../repositories/entretien.repository';
-import notificationService from '../../use_case/services/notification.service';
+import { AppError } from '../../shared/apiError';
 
 export default class EntretienController {
   async create(req: Request, res: Response) {
     try {
-      return entretienService.create(req, res);
+      const {
+        recruteurId,
+        candidatId,
+        disponibiliteRecruteur,
+        horaire
+      } = req.body
+
+      // Assert
+      if (disponibiliteRecruteur != horaire) {
+        throw new AppError( "Pas les mêmes horaires!", 400)
+      }
+
+      const savedEntretien = await entretienService.create(recruteurId, candidatId, horaire);
+
+      res.status(201).send(savedEntretien);
     } catch (err) {
-      res.status(500).send({
-        message: "Some error occurred while creating entretiens."
+      res.status(err instanceof AppError ? err.HttpStatus : 500).send({
+        message: err instanceof AppError ? err.message : "Some error occurred while creating entretiens."
       });
     }
   }
