@@ -1,5 +1,12 @@
 import { Op } from "sequelize";
-import Candidat from '../models/candidat.model';
+import SQLCandidat from '../models/candidat.model';
+
+export interface Candidat {
+  id?: number;
+  langage?: string;
+  email?: string;
+  xp?: number;
+}
 
 export interface ICandidatRepository {
   save: (candidat: Candidat) => Promise<Candidat>
@@ -14,10 +21,10 @@ interface SearchCondition {
   [key: string]: any;
 }
 
-export class CandidatRepository implements ICandidatRepository{
+export class SqlCandidatRepository implements ICandidatRepository{
   async save(candidat: Candidat): Promise<Candidat> {
     try {
-      return await Candidat.create({
+      return await SQLCandidat.create({
         title: candidat.langage,
         description: candidat.email,
         published: candidat.xp
@@ -34,7 +41,7 @@ export class CandidatRepository implements ICandidatRepository{
       if (searchParams?.email)
         condition.email = { [Op.iLike]: `%${searchParams.email}%` };
 
-      return await Candidat.findAll({ where: condition });
+      return await SQLCandidat.findAll({ where: condition });
     } catch (error) {
       throw new Error("Failed to retrieve Candidats!");
     }
@@ -44,7 +51,7 @@ export class CandidatRepository implements ICandidatRepository{
     try {
       let condition: SearchCondition = {};
       condition.id = { [Op.eq]: candidatId};
-      const candidat = await Candidat.findOne({ where: condition});
+      const candidat = await SQLCandidat.findOne({ where: condition});
       return candidat;
     } catch (error) {
       throw new Error("Failed to retrieve Candidats!");
@@ -55,7 +62,7 @@ export class CandidatRepository implements ICandidatRepository{
     const { id, langage, email, xp } = candidat;
 
     try {
-      const affectedRows = await Candidat.update(
+      const affectedRows = await SQLCandidat.update(
         { langage: langage, email: email, xp: xp },
         { where: { id: id } }
       );
@@ -68,7 +75,7 @@ export class CandidatRepository implements ICandidatRepository{
 
   async delete(candidatId: number): Promise<number> {
     try {
-      const affectedRows = await Candidat.destroy({ where: { id: candidatId } });
+      const affectedRows = await SQLCandidat.destroy({ where: { id: candidatId } });
 
       return affectedRows;
     } catch (error) {
@@ -78,7 +85,7 @@ export class CandidatRepository implements ICandidatRepository{
 
   async deleteAll(): Promise<number> {
     try {
-      return Candidat.destroy({
+      return SQLCandidat.destroy({
         where: {},
         truncate: false
       });
@@ -88,4 +95,4 @@ export class CandidatRepository implements ICandidatRepository{
   }
 }
 
-export default new CandidatRepository();
+export default new SqlCandidatRepository();

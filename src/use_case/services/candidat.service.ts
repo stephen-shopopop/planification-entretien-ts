@@ -1,6 +1,5 @@
-import type Candidat from '../../infrastructure/models/candidat.model';
-import { CandidatRepository, type ICandidatRepository } from '../../infrastructure/repositories/candidat.repository';
 import type { Request, Response } from 'express';
+import { SqlCandidatRepository, type Candidat, type ICandidatRepository } from '../../infrastructure/repositories/candidat.repository';
 
 class CandidatService {
     #candidate: ICandidatRepository
@@ -51,4 +50,4 @@ class CandidatService {
     }
 }
 
-export default new CandidatService(new CandidatRepository());
+export default new CandidatService(new SqlCandidatRepository());

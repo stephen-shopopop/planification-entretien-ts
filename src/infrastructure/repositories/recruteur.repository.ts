@@ -1,14 +1,30 @@
 import { Op } from "sequelize";
-import Recruteur from '../models/recruteur.model';
+import SQLRecruteur from '../models/recruteur.model';
+
+export interface IRecruteur {
+  id?: number;
+  langage?: string;
+  email?: string;
+  xp?: number;
+}
+
+export interface IRecruteurRepository {
+  save: (recruteur: IRecruteur) =>  Promise<IRecruteur>;
+  retrieveAll: (searchParams: {email?: string}) => Promise<IRecruteur[]>;
+  retrieveById: (recruteurId: number) => Promise<IRecruteur | null>;
+  update: (recruteur: IRecruteur) => Promise<number>;
+  delete: (recruteurId: number) => Promise<number>;
+  deleteAll(): Promise<number>;
+}
 
 interface SearchCondition {
   [key: string]: any;
 }
 
-class RecruteurRepository {
-  async save(recruteur: Recruteur): Promise<Recruteur> {
+export class SQLRecruteurRepository implements IRecruteurRepository {
+  async save(recruteur: IRecruteur): Promise<IRecruteur> {
     try {
-      return await Recruteur.create({
+      return await SQLRecruteur.create({
         title: recruteur.langage,
         description: recruteur.email,
         published: recruteur.xp
@@ -18,32 +34,32 @@ class RecruteurRepository {
     }
   }
 
-  async retrieveAll(searchParams: {email?: string}): Promise<Recruteur[]> {
+  async retrieveAll(searchParams: {email?: string}): Promise<IRecruteur[]> {
     try {
       let condition: SearchCondition = {};
 
       if (searchParams?.email)
         condition.email = { [Op.iLike]: `%${searchParams.email}%` };
 
-      return await Recruteur.findAll({ where: condition });
+      return await SQLRecruteur.findAll({ where: condition });
     } catch (error) {
       throw new Error("Failed to retrieve Recruteurs!");
     }
   }
 
-  async retrieveById(recruteurId: number): Promise<Recruteur | null> {
+  async retrieveById(recruteurId: number): Promise<IRecruteur | null> {
     try {
-      return await Recruteur.findByPk(recruteurId);
+      return await SQLRecruteur.findByPk(recruteurId);
     } catch (error) {
       throw new Error("Failed to retrieve Recruteurs!");
     }
   }
 
-  async update(recruteur: Recruteur): Promise<number> {
+  async update(recruteur: IRecruteur): Promise<number> {
     const { id, langage, email, xp } = recruteur;
 
     try {
-      const affectedRows = await Recruteur.update(
+      const affectedRows = await SQLRecruteur.update(
         { langage: langage, email: email, xp: xp },
         { where: { id: id } }
       );
@@ -56,7 +72,7 @@ class RecruteurRepository {
 
   async delete(recruteurId: number): Promise<number> {
     try {
-      const affectedRows = await Recruteur.destroy({ where: { id: recruteurId } });
+      const affectedRows = await SQLRecruteur.destroy({ where: { id: recruteurId } });
 
       return affectedRows;
     } catch (error) {
@@ -66,7 +82,7 @@ class RecruteurRepository {
 
   async deleteAll(): Promise<number> {
     try {
-      return Recruteur.destroy({
+      return SQLRecruteur.destroy({
         where: {},
         truncate: false
       });
@@ -76,4 +92,4 @@ class RecruteurRepository {
   }
 }
 
-export default new RecruteurRepository();
+export default new SQLRecruteurRepository();

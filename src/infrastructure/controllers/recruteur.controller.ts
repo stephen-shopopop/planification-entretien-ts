@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Recruteur from '../models/recruteur.model';
+import SQLRecruteur from '../models/recruteur.model';
 import recruteurService from '../../use_case/services/recruteur.service';
 
 export default class RecruteurController {
@@ -48,7 +48,7 @@ export default class RecruteurController {
   }
 
   async update(req: Request, res: Response) {
-    let recruteur: Recruteur = req.body;
+    let recruteur: SQLRecruteur = req.body;
     recruteur.id = parseInt(req.params.id);
 
     try {

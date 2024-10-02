@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Candidat from '../models/candidat.model';
+import SQLCandidat from '../models/candidat.model';
 import candidatService from '../../use_case/services/candidat.service';
 
 export default class CandidatController {
@@ -48,7 +48,7 @@ export default class CandidatController {
   }
 
   async update(req: Request, res: Response) {
-    let candidat: Candidat = req.body;
+    let candidat: SQLCandidat = req.body;
     candidat.id = parseInt(req.params.id);
 
     try {

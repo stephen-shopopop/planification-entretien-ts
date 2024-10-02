@@ -1,8 +1,9 @@
-import Recruteur from '../../infrastructure/models/recruteur.model';
-import recruteurRepository from '../../infrastructure/repositories/recruteur.repository';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import { IRecruteur, SQLRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
 
 class RecruteurService {
+
+    constructor(private readonly recruteurRepository: IRecruteurRepository){ /** */}
 
     async save(req: Request, res: Response) {
         let isEmailValid: boolean;
@@ -18,32 +19,32 @@ class RecruteurService {
             return;
         }
 
-        const recruteur: Recruteur = req.body;
+        const recruteur: IRecruteur = req.body;
 
-        const savedRecruteur = await recruteurRepository.save(recruteur);
+        const savedRecruteur = await this.recruteurRepository.save(recruteur);
 
         res.status(201).send(savedRecruteur);
     }
 
-    async retrieveAll(searchParams: { email?: string }): Promise<Recruteur[]> {
-        return await recruteurRepository.retrieveAll(searchParams);
+    async retrieveAll(searchParams: { email?: string }): Promise<IRecruteur[]> {
+        return await this.recruteurRepository.retrieveAll(searchParams);
     }
 
-    async retrieveById(recruteurId: number): Promise<Recruteur | null> {
-        return await recruteurRepository.retrieveById(recruteurId);
+    async retrieveById(recruteurId: number): Promise<IRecruteur | null> {
+        return await this.recruteurRepository.retrieveById(recruteurId);
     }
 
-    async update(recruteur: Recruteur): Promise<number> {
-        return await recruteurRepository.update(recruteur);
+    async update(recruteur: IRecruteur): Promise<number> {
+        return await this.recruteurRepository.update(recruteur);
     }
 
     async delete(recruteurId: number): Promise<number> {
-        return await recruteurRepository.delete(recruteurId);
+        return await this.recruteurRepository.delete(recruteurId);
     }
 
     async deleteAll(): Promise<number> {
-        return await recruteurRepository.deleteAll();
+        return await this.recruteurRepository.deleteAll();
     }
 }
 
-export default new RecruteurService();
+export default new RecruteurService(new SQLRecruteurRepository());
