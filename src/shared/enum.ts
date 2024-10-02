@@ -1,7 +1,0 @@
-export enum Creation {
-  HORAIRE,
-  CANDIDAT_PAS_TROUVE,
-  RECRUTEUR_PAS_TROUVE,
-  PAS_COMPATIBLE,
-  OK
-}

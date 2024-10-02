@@ -15,7 +15,7 @@ export default class EntretienController {
       } = req.body
 
       // Assert
-      if (disponibiliteRecruteur != horaire) {
+      if (disponibiliteRecruteur !== horaire) {
         throw new AppError( "Pas les mêmes horaires!", 400)
       }
 

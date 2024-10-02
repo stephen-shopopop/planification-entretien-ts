@@ -1,16 +1,23 @@
-import { Request, Response } from "express";
-import SQLCandidat from '../models/candidat.model';
+import type { Request, Response } from "express";
+import type SQLCandidat from '../models/candidat.model';
 import candidatService from '../../use_case/services/candidat.service';
+import { AppError } from "../../shared/apiError";
 
 export default class CandidatController {
   async create(req: Request, res: Response) {
     try {
-      const savedCandidat = await candidatService.save(req, res);
+      const {
+        langage,
+        xp,
+        email,
+      } = req.body
+
+      const savedCandidat = await candidatService.save({langage, xp, email});
 
       res.status(201).send(savedCandidat);
     } catch (err) {
-      res.status(500).send({
-        message: "Some error occurred while creating candidats."
+      res.status(err instanceof AppError ? err.HttpStatus : 500).send({
+        message: err instanceof AppError ? err.message : "Some error occurred while creating entretiens."
       });
     }
   }
