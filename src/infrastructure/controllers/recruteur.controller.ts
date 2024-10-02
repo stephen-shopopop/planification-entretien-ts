@@ -1,16 +1,23 @@
-import { Request, Response } from "express";
-import SQLRecruteur from '../models/recruteur.model';
+import type { Request, Response } from "express";
+import type SQLRecruteur from '../models/recruteur.model';
 import recruteurService from '../../use_case/services/recruteur.service';
+import { AppError } from "../../shared/apiError";
 
 export default class RecruteurController {
   async create(req: Request, res: Response) {
     try {
-      const savedRecruteur = await recruteurService.save(req, res);
+      const {
+        langage,
+        xp,
+        email,
+      } = req.body
+
+      const savedRecruteur = await recruteurService.save({langage, xp, email});
 
       res.status(201).send(savedRecruteur);
     } catch (err) {
-      res.status(500).send({
-        message: "Some error occurred while creating recruteurs."
+      res.status(err instanceof AppError ? err.HttpStatus : 500).send({
+        message: err instanceof AppError ? err.message : "Some error occurred while creating entretiens."
       });
     }
   }
