@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import type SQLCandidat from '../models/candidat.model';
 import { AppError } from "../../shared/apiError";
 import candidatService from "../../use_case/candidat.service";
+import creerCandidatUseCase from "../../use_case/creer-candidat.use-case";
+import listerCandidatsUseCase from "../../use_case/lister-candidats.use-case";
 
 export default class CandidatController {
   async create(req: Request, res: Response) {
@@ -12,7 +14,7 @@ export default class CandidatController {
         email,
       } = req.body
 
-      const savedCandidat = await candidatService.save({langage, xp, email});
+      const savedCandidat = await creerCandidatUseCase.execute({langage, xp, email})
 
       res.status(201).send(savedCandidat);
     } catch (err) {
@@ -26,7 +28,7 @@ export default class CandidatController {
     const langage = typeof req.query.langage === "string" ? req.query.langage : "";
 
     try {
-      const candidats = await candidatService.retrieveAll({ email: langage });
+      const candidats = await listerCandidatsUseCase.execute({ email: langage })
 
       res.status(200).send(candidats);
     } catch (err) {

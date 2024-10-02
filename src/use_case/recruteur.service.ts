@@ -1,11 +1,12 @@
-import { type IRecruteur, SqlRecruteurRepository, type IRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
+import type { Recruteur, IRecruteurRepository } from '../domain/recruteur.interface';
+import {  SqlRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
 import { AppError } from '../shared/apiError';
 
 class RecruteurService {
 
     constructor(private readonly recruteurRepository: IRecruteurRepository){ /** */}
 
-    async save({email, langage, xp}: IRecruteur) {
+    async save({email, langage, xp}: Recruteur) {
         const regexp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
         if (!langage || !xp || xp < 0 || !email || !regexp.test(email)) {
@@ -19,15 +20,15 @@ class RecruteurService {
         });
     }
 
-    async retrieveAll(searchParams: { email?: string }): Promise<IRecruteur[]> {
+    async retrieveAll(searchParams: { email?: string }): Promise<Recruteur[]> {
         return await this.recruteurRepository.retrieveAll(searchParams);
     }
 
-    async retrieveById(recruteurId: number): Promise<IRecruteur | null> {
+    async retrieveById(recruteurId: number): Promise<Recruteur | null> {
         return await this.recruteurRepository.retrieveById(recruteurId);
     }
 
-    async update(recruteur: IRecruteur): Promise<number> {
+    async update(recruteur: Recruteur): Promise<number> {
         return await this.recruteurRepository.update(recruteur);
     }
 

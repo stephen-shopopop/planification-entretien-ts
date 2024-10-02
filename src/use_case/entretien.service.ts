@@ -1,8 +1,11 @@
-import { SqlRecruteurRepository, type IRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
-import { SqlCandidatRepository, type ICandidatRepository } from '../infrastructure/repositories/candidat.repository';
-import { type IEntretien, type IEntretienRepository, SqlEntretienRepository } from '../infrastructure/repositories/entretien.repository';
+import { SqlRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
+import { SqlCandidatRepository } from '../infrastructure/repositories/candidat.repository';
+import { SqlEntretienRepository } from '../infrastructure/repositories/entretien.repository';
 import notificationService from './notification.service';
 import { AppError } from '../shared/apiError';
+import type { ICandidatRepository } from '../domain/candidat.interface';
+import type { Entretien, IEntretienRepository } from '../domain/entretien.interface';
+import type { IRecruteurRepository } from '../domain/recruteur.interface';
 
 class EntretienService {
     constructor(
@@ -43,7 +46,7 @@ class EntretienService {
         return savedEntretien
     }
 
-    async retrieveAll(): Promise<IEntretien[]> {
+    async retrieveAll(): Promise<Entretien[]> {
         return await this.entretienRepository.retrieveAll();
     }
 }

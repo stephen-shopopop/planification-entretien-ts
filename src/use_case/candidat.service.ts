@@ -1,4 +1,5 @@
-import { SqlCandidatRepository, type Candidat, type ICandidatRepository } from '../infrastructure/repositories/candidat.repository';
+import type { Candidat, ICandidatRepository } from '../domain/candidat.interface';
+import { SqlCandidatRepository } from '../infrastructure/repositories/candidat.repository';
 import { AppError } from '../shared/apiError';
 
 class CandidatService {

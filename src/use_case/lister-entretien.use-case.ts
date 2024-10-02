@@ -1,10 +1,13 @@
-import { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
+import type { IEntretienRepository } from "../domain/entretien.interface";
+import {  SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
 
 export class ListeEntretien {
 
   #sqlEntretienRepository: SqlEntretienRepository
 
-  constructor(){
+  constructor(
+    private readonly sqlEntretienRepository: IEntretienRepository
+  ){
     this.#sqlEntretienRepository = new SqlEntretienRepository()
   }
 
@@ -13,4 +16,4 @@ export class ListeEntretien {
   }
 }
 
-export default new ListeEntretien()
+export default new ListeEntretien(new SqlEntretienRepository())

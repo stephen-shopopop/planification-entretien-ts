@@ -1,27 +1,12 @@
+import type { Entretien, IEntretienRepository } from '../../domain/entretien.interface';
 import SQLEntretien from '../models/entretien.model';
-
-export interface IEntretien {
-  id?: number;
-  horaire?: string;
-  candidatId?: number;
-  recruteurId?: number;
-}
-
-export interface IEntretienRepository {
-  save: (entretien: IEntretien) => Promise<IEntretien>;
-  retrieveAll: () => Promise<IEntretien[]>;
-  retrieveById: (entretienId: number) => Promise<IEntretien | null>;
-  update: (entretien: IEntretien) => Promise<number>;
-  delete: (entretienId: number) => Promise<number>;
-  deleteAll: () => Promise<number>;
-}
 
 interface SearchCondition {
   [key: string]: any;
 }
 
 export class SqlEntretienRepository implements IEntretienRepository {
-  async save(entretien: IEntretien): Promise<IEntretien> {
+  async save(entretien: Entretien): Promise<Entretien> {
     try {
       return await SQLEntretien.create({
         candidatId: entretien.candidatId,
@@ -33,7 +18,7 @@ export class SqlEntretienRepository implements IEntretienRepository {
     }
   }
 
-  async retrieveAll(): Promise<IEntretien[]> {
+  async retrieveAll(): Promise<Entretien[]> {
     try {
       return await SQLEntretien.findAll();
     } catch (error) {
@@ -41,7 +26,7 @@ export class SqlEntretienRepository implements IEntretienRepository {
     }
   }
 
-  async retrieveById(entretienId: number): Promise<IEntretien | null> {
+  async retrieveById(entretienId: number): Promise<Entretien | null> {
     try {
       return await SQLEntretien.findByPk(entretienId);
     } catch (error) {
@@ -49,7 +34,7 @@ export class SqlEntretienRepository implements IEntretienRepository {
     }
   }
 
-  async update(entretien: IEntretien): Promise<number> {
+  async update(entretien: Entretien): Promise<number> {
     const { id,  horaire } = entretien;
 
     try {

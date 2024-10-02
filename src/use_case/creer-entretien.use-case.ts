@@ -1,8 +1,11 @@
-import { type Candidat, SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
-import { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
-import { type IRecruteur, SqlRecruteurRepository } from "../infrastructure/repositories/recruteur.repository";
+import type { Candidat, ICandidatRepository } from "../domain/candidat.interface";
+import { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
+import { SqlRecruteurRepository } from "../infrastructure/repositories/recruteur.repository";
 import { AppError } from "../shared/apiError";
 import notificationService from "./notification.service";
+import type { IEntretienRepository } from "../domain/entretien.interface";
+import { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
+import type { Recruteur, IRecruteurRepository } from "../domain/recruteur.interface";
 
 export class CréerEntretien {
 
@@ -10,10 +13,14 @@ export class CréerEntretien {
   #sqlCandidatRepository: SqlCandidatRepository
   #sqlRecruteurRepository: SqlRecruteurRepository
 
-  constructor(){
-    this.#sqlEntretienRepository = new SqlEntretienRepository()
-    this.#sqlCandidatRepository = new SqlCandidatRepository()
-    this.#sqlRecruteurRepository = new SqlRecruteurRepository()
+  constructor(
+    private readonly sqlEntretienRepository: IEntretienRepository,
+    private readonly sqlCandidatRepository: ICandidatRepository,
+    private readonly sqlRecruteurRepository: IRecruteurRepository
+  ){
+    this.#sqlEntretienRepository = sqlEntretienRepository
+    this.#sqlCandidatRepository = sqlCandidatRepository
+    this.#sqlRecruteurRepository = sqlRecruteurRepository
   }
 
   #assertCandidat(candidatId: number, candidat: Candidat | null) {
@@ -24,7 +31,7 @@ export class CréerEntretien {
     return candidat
   }
 
-  #assertRecruteur(recruteurId: number, recruteur: IRecruteur | null) {
+  #assertRecruteur(recruteurId: number, recruteur: Recruteur | null) {
     if (!recruteur) {
       throw new AppError(`Cannot create Entretien with candidat id=${recruteurId}.`, 404)
     }
@@ -32,13 +39,13 @@ export class CréerEntretien {
     return recruteur
   }
 
-  #assertAndCoerceUserLangage(recruteur: IRecruteur, candidat: Candidat){
+  #assertAndCoerceUserLangage(recruteur: Recruteur, candidat: Candidat){
     if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
       throw new AppError("Pas la même techno", 400)
     }
   }
 
-  #assertAndCoerceUserAge(recruteur: IRecruteur, candidat: Candidat){
+  #assertAndCoerceUserAge(recruteur: Recruteur, candidat: Candidat){
     if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
       throw new AppError( "Recruteur trop jeune", 400)
     }
@@ -69,4 +76,8 @@ export class CréerEntretien {
   }
 }
 
-export default new CréerEntretien()
+export default new CréerEntretien(
+  new SqlEntretienRepository(),
+  new SqlCandidatRepository(),
+  new SqlRecruteurRepository()
+)

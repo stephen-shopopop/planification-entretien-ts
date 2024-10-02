@@ -1,28 +1,13 @@
 import { Op } from "sequelize";
 import SQLRecruteur from '../models/recruteur.model';
-
-export interface IRecruteur {
-  id?: number;
-  langage?: string;
-  email?: string;
-  xp?: number;
-}
-
-export interface IRecruteurRepository {
-  save: (recruteur: IRecruteur) =>  Promise<IRecruteur>;
-  retrieveAll: (searchParams: {email?: string}) => Promise<IRecruteur[]>;
-  retrieveById: (recruteurId: number) => Promise<IRecruteur | null>;
-  update: (recruteur: IRecruteur) => Promise<number>;
-  delete: (recruteurId: number) => Promise<number>;
-  deleteAll(): Promise<number>;
-}
+import type { Recruteur, IRecruteurRepository } from "../../domain/recruteur.interface";
 
 interface SearchCondition {
   [key: string]: any;
 }
 
 export class SqlRecruteurRepository implements IRecruteurRepository {
-  async save(recruteur: IRecruteur): Promise<IRecruteur> {
+  async save(recruteur: Recruteur): Promise<Recruteur> {
     try {
       return await SQLRecruteur.create({
         title: recruteur.langage,
@@ -34,7 +19,7 @@ export class SqlRecruteurRepository implements IRecruteurRepository {
     }
   }
 
-  async retrieveAll(searchParams: {email?: string}): Promise<IRecruteur[]> {
+  async retrieveAll(searchParams: {email?: string}): Promise<Recruteur[]> {
     try {
       let condition: SearchCondition = {};
 
@@ -47,7 +32,7 @@ export class SqlRecruteurRepository implements IRecruteurRepository {
     }
   }
 
-  async retrieveById(recruteurId: number): Promise<IRecruteur | null> {
+  async retrieveById(recruteurId: number): Promise<Recruteur | null> {
     try {
       return await SQLRecruteur.findByPk(recruteurId);
     } catch (error) {
@@ -55,7 +40,7 @@ export class SqlRecruteurRepository implements IRecruteurRepository {
     }
   }
 
-  async update(recruteur: IRecruteur): Promise<number> {
+  async update(recruteur: Recruteur): Promise<number> {
     const { id, langage, email, xp } = recruteur;
 
     try {
