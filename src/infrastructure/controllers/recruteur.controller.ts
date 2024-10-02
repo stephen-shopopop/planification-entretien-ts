@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type SQLRecruteur from '../models/recruteur.model';
-import recruteurService from '../../use_case/services/recruteur.service';
+import recruteurService from '../../use_case/recruteur.service';
 import { AppError } from "../../shared/apiError";
 
 export default class RecruteurController {

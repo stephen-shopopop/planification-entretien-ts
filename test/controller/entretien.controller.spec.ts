@@ -5,7 +5,7 @@ import SQLCandidat from '../../src/infrastructure/models/candidat.model';
 import SQLRecruteur from '../../src/infrastructure/models/recruteur.model';
 import candidatRepository from '../../src/infrastructure/repositories/candidat.repository';
 import recruteurRepository from '../../src/infrastructure/repositories/recruteur.repository';
-import notificationService from '../../src/use_case/services/notification.service';
+import notificationService from '../../src/use_case/notification.service';
 
 const request = require('supertest');
 

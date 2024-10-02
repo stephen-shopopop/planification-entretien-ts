@@ -1,4 +1,4 @@
-class NotificationService {
+export class NotificationService {
 
     async envoyerEmailDeConfirmationAuCandidat(email: string) {
         return Promise.resolve(true);

@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import type SQLCandidat from '../models/candidat.model';
-import candidatService from '../../use_case/services/candidat.service';
 import { AppError } from "../../shared/apiError";
+import candidatService from "../../use_case/candidat.service";
 
 export default class CandidatController {
   async create(req: Request, res: Response) {

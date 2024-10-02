@@ -1,5 +1,5 @@
-import { type IRecruteur, SqlRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
-import { AppError } from '../../shared/apiError';
+import { type IRecruteur, SqlRecruteurRepository, type IRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
+import { AppError } from '../shared/apiError';
 
 class RecruteurService {
 

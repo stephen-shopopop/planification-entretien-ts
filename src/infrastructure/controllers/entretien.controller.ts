@@ -1,8 +1,10 @@
 import type { Request, Response } from 'express';
 import type SQLEntretien from '../models/entretien.model';
-import entretienService from '../../use_case/services/entretien.service';
+import entretienService from '../../use_case/entretien.service';
 import entretienRepository from '../repositories/entretien.repository';
 import { AppError } from '../../shared/apiError';
+import listerEntretienUseCase from '../../use_case/lister-entretien.use-case';
+import creerEntretienUseCase from '../../use_case/creer-entretien.use-case';
 
 export default class EntretienController {
   async create(req: Request, res: Response) {
@@ -19,7 +21,7 @@ export default class EntretienController {
         throw new AppError( "Pas les mêmes horaires!", 400)
       }
 
-      const savedEntretien = await entretienService.create(recruteurId, candidatId, horaire);
+      const savedEntretien = await creerEntretienUseCase.execute(recruteurId, candidatId, horaire)
 
       res.status(201).send(savedEntretien);
     } catch (err) {
@@ -31,7 +33,7 @@ export default class EntretienController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const entretiens = await entretienService.retrieveAll();
+      const entretiens = await listerEntretienUseCase.execute();
 
       res.status(200).send(entretiens);
     } catch (err) {
