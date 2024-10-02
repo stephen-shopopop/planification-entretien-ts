@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Entretien from '../models/entretien.model';
+import SQLEntretien from '../models/entretien.model';
 import entretienService from '../../use_case/services/entretien.service';
 import entretienRepository from '../repositories/entretien.repository';
 import notificationService from '../../use_case/services/notification.service';
@@ -46,7 +46,7 @@ export default class EntretienController {
   }
 
   async update(req: Request, res: Response) {
-    let entretien: Entretien = req.body;
+    let entretien: SQLEntretien = req.body;
     entretien.id = parseInt(req.params.id);
 
     try {

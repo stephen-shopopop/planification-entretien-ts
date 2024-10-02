@@ -1,11 +1,15 @@
-import recruteurRepository from '../../infrastructure/repositories/recruteur.repository';
-import candidatRepository from '../../infrastructure/repositories/candidat.repository';
-import { Request, Response } from 'express';
-import Entretien from '../../infrastructure/models/entretien.model';
-import entretienRepository from '../../infrastructure/repositories/entretien.repository';
+import { SqlRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
+import { SqlCandidatRepository, type ICandidatRepository } from '../../infrastructure/repositories/candidat.repository';
+import type { Request, Response } from 'express';
+import { IEntretien, type IEntretienRepository, SqlEntretienRepository } from '../../infrastructure/repositories/entretien.repository';
 import notificationService from './notification.service';
 
 class EntretienService {
+    constructor(
+        private readonly entretienRepository: IEntretienRepository,
+        private readonly candidatRepository: ICandidatRepository,
+        private readonly recruteurRepository: IRecruteurRepository
+    ) { /** */}
 
     async create(req: Request, res: Response) {
         if (req.body.disponibiliteRecruteur != req.body.horaire) {
@@ -15,8 +19,8 @@ class EntretienService {
             return;
         }
 
-        const recruteur = await recruteurRepository.retrieveById(req.body.recruteurId);
-        const candidat = await candidatRepository.retrieveById(req.body.candidatId);
+        const recruteur = await this.recruteurRepository.retrieveById(req.body.recruteurId);
+        const candidat = await this.candidatRepository.retrieveById(req.body.candidatId);
 
         if (!candidat) {
             res.status(404).send({
@@ -46,9 +50,9 @@ class EntretienService {
             return;
         }
 
-        const entretien: Entretien = req.body;
+        const entretien: IEntretien = req.body;
 
-        const savedEntretien = await entretienRepository.save(entretien);
+        const savedEntretien = await this.entretienRepository.save(entretien);
 
         await notificationService.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
         await notificationService.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');
@@ -56,9 +60,13 @@ class EntretienService {
         res.status(201).send(savedEntretien);
     }
 
-    async retrieveAll(): Promise<Entretien[]> {
-        return await entretienRepository.retrieveAll();
+    async retrieveAll(): Promise<IEntretien[]> {
+        return await this.entretienRepository.retrieveAll();
     }
 }
 
-export default new EntretienService();
+export default new EntretienService(
+    new SqlEntretienRepository(),
+    new SqlCandidatRepository(),
+    new SqlRecruteurRepository()
+);

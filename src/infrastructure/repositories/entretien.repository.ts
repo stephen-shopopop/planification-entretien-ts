@@ -1,14 +1,29 @@
-import { Op } from "sequelize";
-import Entretien from '../models/entretien.model';
+import SQLEntretien from '../models/entretien.model';
+
+export interface IEntretien {
+  id?: number;
+  horaire?: string;
+  candidatId?: number;
+  recruteurId?: number;
+}
+
+export interface IEntretienRepository {
+  save: (entretien: IEntretien) => Promise<IEntretien>;
+  retrieveAll: () => Promise<IEntretien[]>;
+  retrieveById: (entretienId: number) => Promise<IEntretien | null>;
+  update: (entretien: IEntretien) => Promise<number>;
+  delete: (entretienId: number) => Promise<number>;
+  deleteAll: () => Promise<number>;
+}
 
 interface SearchCondition {
   [key: string]: any;
 }
 
-class EntretienRepository {
-  async save(entretien: Entretien): Promise<Entretien> {
+export class SqlEntretienRepository implements IEntretienRepository {
+  async save(entretien: IEntretien): Promise<IEntretien> {
     try {
-      return await Entretien.create({
+      return await SQLEntretien.create({
         candidatId: entretien.candidatId,
         recruteurId: entretien.recruteurId,
         horaire: entretien.horaire
@@ -18,27 +33,27 @@ class EntretienRepository {
     }
   }
 
-  async retrieveAll(): Promise<Entretien[]> {
+  async retrieveAll(): Promise<IEntretien[]> {
     try {
-      return await Entretien.findAll();
+      return await SQLEntretien.findAll();
     } catch (error) {
       throw new Error("Failed to retrieve Entretiens!");
     }
   }
 
-  async retrieveById(entretienId: number): Promise<Entretien | null> {
+  async retrieveById(entretienId: number): Promise<IEntretien | null> {
     try {
-      return await Entretien.findByPk(entretienId);
+      return await SQLEntretien.findByPk(entretienId);
     } catch (error) {
       throw new Error("Failed to retrieve Entretiens!");
     }
   }
 
-  async update(entretien: Entretien): Promise<number> {
+  async update(entretien: IEntretien): Promise<number> {
     const { id,  horaire } = entretien;
 
     try {
-      const affectedRows = await Entretien.update(
+      const affectedRows = await SQLEntretien.update(
         { horaire: horaire },
         { where: { id: id } }
       );
@@ -51,7 +66,7 @@ class EntretienRepository {
 
   async delete(entretienId: number): Promise<number> {
     try {
-      const affectedRows = await Entretien.destroy({ where: { id: entretienId } });
+      const affectedRows = await SQLEntretien.destroy({ where: { id: entretienId } });
 
       return affectedRows;
     } catch (error) {
@@ -61,7 +76,7 @@ class EntretienRepository {
 
   async deleteAll(): Promise<number> {
     try {
-      return Entretien.destroy({
+      return SQLEntretien.destroy({
         where: {},
         truncate: false
       });
@@ -71,4 +86,4 @@ class EntretienRepository {
   }
 }
 
-export default new EntretienRepository();
+export default new SqlEntretienRepository();

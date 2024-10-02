@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize-typescript";
 import { config, dialect } from "../../config/db.config";
 import SQLCandidat from "../models/candidat.model";
 import SQLRecruteur from '../models/recruteur.model';
-import Entretien from '../models/entretien.model';
+import SQLEntretien from '../models/entretien.model';
 
 class Database {
   public sequelize: Sequelize | undefined;
@@ -24,7 +24,7 @@ class Database {
         acquire: config.pool.acquire,
         idle: config.pool.idle
       },
-      models: [SQLCandidat, SQLRecruteur, Entretien]
+      models: [SQLCandidat, SQLRecruteur, SQLEntretien]
     });
 
     await this.sequelize

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { IRecruteur, SQLRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
+import { IRecruteur, SqlRecruteurRepository, type IRecruteurRepository } from '../../infrastructure/repositories/recruteur.repository';
 
 class RecruteurService {
 
@@ -47,4 +47,4 @@ class RecruteurService {
     }
 }
 
-export default new RecruteurService(new SQLRecruteurRepository());
+export default new RecruteurService(new SqlRecruteurRepository());

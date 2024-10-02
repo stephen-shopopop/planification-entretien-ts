@@ -21,7 +21,7 @@ interface SearchCondition {
   [key: string]: any;
 }
 
-export class SQLRecruteurRepository implements IRecruteurRepository {
+export class SqlRecruteurRepository implements IRecruteurRepository {
   async save(recruteur: IRecruteur): Promise<IRecruteur> {
     try {
       return await SQLRecruteur.create({
@@ -92,4 +92,4 @@ export class SQLRecruteurRepository implements IRecruteurRepository {
   }
 }
 
-export default new SQLRecruteurRepository();
+export default new SqlRecruteurRepository();
