@@ -4,10 +4,12 @@
   "description": "Rest API using Node.js, TypeScript ORM Sequelize, Express, Postgres",
   "main": "src/server.ts",
   "scripts": {
-    "test": "jest -i --detectOpenHandles",
+    "test": "jest -i --detectOpenHandles --runInBand",
     "build": "tsc",
     "dev": "node ./build/src/server.js",
-    "start": "tsc && npm run dev"
+    "start": "tsc && npm run dev",
+    "clean": "rm -rf ./dist",
+    "maintenance": "npm run clean && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm cache clean --force"
   },
   "keywords": [
     "nodejs",
