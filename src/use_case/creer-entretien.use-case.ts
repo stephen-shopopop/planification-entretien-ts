@@ -9,6 +9,7 @@ import type { Candidat } from "../domain/entity/candidat";
 import type { Recruteur } from "../domain/entity/recruteur";
 import type { INotificationRepository } from "../domain/port/notification-repository";
 import type { NotificationService } from "../infrastructure/repositories/notifications.repository";
+import { Entretien } from "../domain/entity/entretien";
 
 export class CréerEntretien {
   #sqlEntretienRepository: SqlEntretienRepository
@@ -50,18 +51,6 @@ export class CréerEntretien {
     return recruteur
   }
 
-  #assertAndCoerceUsersLangage(recruteur: Recruteur, candidat: Candidat){
-    if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
-      throw new AppError("Pas la même techno", 400)
-    }
-  }
-
-  #assertAndCoerceUsersAge(recruteur: Recruteur, candidat: Candidat){
-    if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
-      throw new AppError( "Recruteur trop jeune", 400)
-    }
-  }
-
   async execute ({
     recruteurId,
     candidatId,
@@ -78,17 +67,17 @@ export class CréerEntretien {
     const recruteur = await this.#sqlRecruteurRepository.retrieveById(recruteurId)
     const candidat = await this.#sqlCandidatRepository.retrieveById(candidatId)
 
+    
     const candidatProfil = this.#assertCandidat(candidatId, candidat)
     const recruteurProfil = this.#assertRecruteur(recruteurId, recruteur)
 
-    this.#assertAndCoerceUsersLangage(recruteurProfil, candidatProfil)
-    this.#assertAndCoerceUsersAge(recruteurProfil, candidatProfil)
+    Entretien.plannifier(candidatProfil, recruteurProfil)
 
-    const savedEntretien = await this.#sqlEntretienRepository.save({
+    const savedEntretien = await this.#sqlEntretienRepository.save(new Entretien(
         candidatId,
         recruteurId,
         horaire
-    });
+    ));
 
     await this.#notificationRepository.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
     await this.#notificationRepository.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');

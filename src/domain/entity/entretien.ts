@@ -1,6 +1,33 @@
-export interface Entretien {
+// export interface Entretien {
+//   id?: number;
+//   horaire?: string;
+//   candidatId?: number;
+//   recruteurId?: number;
+// }
+
+import { AppError } from "../../shared/apiError";
+import type { Candidat } from "./candidat";
+import type { Recruteur } from "./recruteur";
+
+export class Entretien {
   id?: number;
   horaire?: string;
   candidatId?: number;
   recruteurId?: number;
+
+  constructor(candidatId: number, recruteurId: number, horaire?: string ){
+    this.horaire = horaire
+    this.candidatId = candidatId
+    this.recruteurId = recruteurId
+  }
+
+  static plannifier(candidat: Candidat, recruteur: Recruteur){
+    if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
+      throw new AppError("Pas la même techno", 400)
+    }
+
+    if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
+      throw new AppError( "Recruteur trop jeune", 400)
+    }
+  }
 }
