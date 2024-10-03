@@ -1,4 +1,4 @@
-import { Recruteur } from "../entity/recruteur";
+import type { Recruteur } from "../entity/recruteur";
 
 export interface IRecruteurRepository {
   save: (recruteur: Recruteur) =>  Promise<Recruteur>;

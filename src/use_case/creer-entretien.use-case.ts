@@ -1,28 +1,31 @@
-import { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
-import { SqlRecruteurRepository } from "../infrastructure/repositories/recruteur.repository";
+import type { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
+import type { SqlRecruteurRepository } from "../infrastructure/repositories/recruteur.repository";
 import { AppError } from "../shared/apiError";
-import notificationService from "./notification.service";
-import { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
-import { IEntretienRepository } from "../domain/port/entretien-repository";
-import { ICandidatRepository } from "../domain/port/candidat-repository";
-import { IRecruteurRepository } from "../domain/port/recruteur-repository";
-import { Candidat } from "../domain/entity/candidat";
-import { Recruteur } from "../domain/entity/recruteur";
-import { Entretien } from "../domain/entity/entretien";
+import type { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
+import type { IEntretienRepository } from "../domain/port/entretien-repository";
+import type { ICandidatRepository } from "../domain/port/candidat-repository";
+import type { IRecruteurRepository } from "../domain/port/recruteur-repository";
+import type { Candidat } from "../domain/entity/candidat";
+import type { Recruteur } from "../domain/entity/recruteur";
+import type { INotificationRepository } from "../domain/port/notification-repository";
+import type { NotificationService } from "../infrastructure/repositories/notifications.repository";
 
 export class CréerEntretien {
   #sqlEntretienRepository: SqlEntretienRepository
   #sqlCandidatRepository: SqlCandidatRepository
   #sqlRecruteurRepository: SqlRecruteurRepository
+  #notificationRepository: NotificationService
 
   constructor(
     private readonly sqlEntretienRepository: IEntretienRepository,
     private readonly sqlCandidatRepository: ICandidatRepository,
-    private readonly sqlRecruteurRepository: IRecruteurRepository
+    private readonly sqlRecruteurRepository: IRecruteurRepository,
+    private readonly notificationRepository: INotificationRepository
   ){
     this.#sqlEntretienRepository = sqlEntretienRepository
     this.#sqlCandidatRepository = sqlCandidatRepository
     this.#sqlRecruteurRepository = sqlRecruteurRepository
+    this.#notificationRepository = notificationRepository
   }
 
   #assertRecruteurDisponility(disponibiliteRecruteur?: string, horaire?: string){
@@ -87,8 +90,8 @@ export class CréerEntretien {
         horaire
     });
 
-    await notificationService.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
-    await notificationService.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');
+    await this.#notificationRepository.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
+    await this.#notificationRepository.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');
 
     return savedEntretien
   }

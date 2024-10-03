@@ -1,5 +1,5 @@
-import { Candidat } from "../domain/entity/candidat";
-import { ICandidatRepository } from "../domain/port/candidat-repository";
+import type { Candidat } from "../domain/entity/candidat";
+import type { ICandidatRepository } from "../domain/port/candidat-repository";
 import { AppError } from "../shared/apiError";
 
 export class CreerCandidat {

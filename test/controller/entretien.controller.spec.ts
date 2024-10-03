@@ -5,13 +5,13 @@ import SQLCandidat from '../../src/infrastructure/models/candidat.model';
 import SQLRecruteur from '../../src/infrastructure/models/recruteur.model';
 import candidatRepository from '../../src/infrastructure/repositories/candidat.repository';
 import recruteurRepository from '../../src/infrastructure/repositories/recruteur.repository';
-import notificationService from '../../src/use_case/notification.service';
+import {notificationRepository} from '../../src/infrastructure/repositories/notifications.repository';
 
 const request = require('supertest');
 
 describe('Entretien', () => {
-    const envoyerEmailAuCandidatMock = jest.spyOn(notificationService, 'envoyerEmailDeConfirmationAuCandidat');
-    const envoyerEmailAuRecruteurMock = jest.spyOn(notificationService, 'envoyerEmailDeConfirmationAuRecruteur');
+    const envoyerEmailAuCandidatMock = jest.spyOn(notificationRepository, 'envoyerEmailDeConfirmationAuCandidat');
+    const envoyerEmailAuRecruteurMock = jest.spyOn(notificationRepository, 'envoyerEmailDeConfirmationAuRecruteur');
 
     afterAll(async () => {
         await candidatRepository.deleteAll();

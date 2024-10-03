@@ -1,4 +1,4 @@
-import { Entretien } from "../entity/entretien";
+import type { Entretien } from "../entity/entretien";
 
 export interface IEntretienRepository {
   save: (entretien: Entretien) => Promise<Entretien>;

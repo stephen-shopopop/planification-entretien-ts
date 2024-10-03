@@ -1,4 +1,4 @@
-import { IEntretienRepository } from "../domain/port/entretien-repository";
+import type { IEntretienRepository } from "../domain/port/entretien-repository";
 import {  SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
 
 export class ListeEntretien {

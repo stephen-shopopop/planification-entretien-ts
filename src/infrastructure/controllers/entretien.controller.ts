@@ -6,12 +6,14 @@ import { ListeEntretien } from '../../use_case/lister-entretien.use-case';
 import { CréerEntretien } from '../../use_case/creer-entretien.use-case';
 import { SqlCandidatRepository } from '../repositories/candidat.repository';
 import { SqlRecruteurRepository } from '../repositories/recruteur.repository';
+import { notificationRepository } from '../repositories/notifications.repository';
 
 /** Register */
 const creerEntretien = new CréerEntretien(
   new SqlEntretienRepository(),
   new SqlCandidatRepository(),
-  new SqlRecruteurRepository()
+  new SqlRecruteurRepository(),
+  notificationRepository
 )
 const listeEntretien = new ListeEntretien(new SqlEntretienRepository())
 
