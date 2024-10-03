@@ -1,9 +1,4 @@
-export interface Candidat {
-  id?: number;
-  langage?: string;
-  email?: string;
-  xp?: number;
-}
+import { Candidat } from "../entity/candidat"
 
 export interface ICandidatRepository {
   save: (candidat: Candidat) => Promise<Candidat>

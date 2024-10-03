@@ -1,9 +1,4 @@
-export interface Entretien {
-  id?: number;
-  horaire?: string;
-  candidatId?: number;
-  recruteurId?: number;
-}
+import { Entretien } from "../entity/entretien";
 
 export interface IEntretienRepository {
   save: (entretien: Entretien) => Promise<Entretien>;

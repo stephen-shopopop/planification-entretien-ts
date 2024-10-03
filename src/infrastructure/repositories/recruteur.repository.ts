@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import SQLRecruteur from '../models/recruteur.model';
-import type { Recruteur, IRecruteurRepository } from "../../domain/recruteur.interface";
+import { Recruteur } from "../../domain/entity/recruteur";
+import { IRecruteurRepository } from "../../domain/port/recruteur-repository";
 
 interface SearchCondition {
   [key: string]: any;

@@ -1,4 +1,5 @@
-import type { Recruteur, IRecruteurRepository } from '../domain/recruteur.interface';
+import { Recruteur } from '../domain/entity/recruteur';
+import { IRecruteurRepository } from '../domain/port/recruteur-repository';
 import {  SqlRecruteurRepository } from '../infrastructure/repositories/recruteur.repository';
 import { AppError } from '../shared/apiError';
 

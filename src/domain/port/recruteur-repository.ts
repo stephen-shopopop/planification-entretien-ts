@@ -1,9 +1,4 @@
-export interface Recruteur {
-  id?: number;
-  langage?: string;
-  email?: string;
-  xp?: number;
-}
+import { Recruteur } from "../entity/recruteur";
 
 export interface IRecruteurRepository {
   save: (recruteur: Recruteur) =>  Promise<Recruteur>;

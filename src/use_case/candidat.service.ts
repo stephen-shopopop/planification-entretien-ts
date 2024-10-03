@@ -1,4 +1,5 @@
-import type { Candidat, ICandidatRepository } from '../domain/candidat.interface';
+import { Candidat } from '../domain/entity/candidat';
+import { ICandidatRepository } from '../domain/port/candidat-repository';
 import { SqlCandidatRepository } from '../infrastructure/repositories/candidat.repository';
 import { AppError } from '../shared/apiError';
 

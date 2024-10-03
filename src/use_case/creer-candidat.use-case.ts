@@ -1,5 +1,5 @@
-import type { Candidat, ICandidatRepository } from "../domain/candidat.interface";
-import { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
+import { Candidat } from "../domain/entity/candidat";
+import { ICandidatRepository } from "../domain/port/candidat-repository";
 import { AppError } from "../shared/apiError";
 
 export class CreerCandidat {
@@ -24,5 +24,3 @@ export class CreerCandidat {
     });
   }
 }
-
-export default new CreerCandidat(new SqlCandidatRepository())

@@ -2,8 +2,13 @@ import type { Request, Response } from "express";
 import type SQLCandidat from '../models/candidat.model';
 import { AppError } from "../../shared/apiError";
 import candidatService from "../../use_case/candidat.service";
-import creerCandidatUseCase from "../../use_case/creer-candidat.use-case";
-import listerCandidatsUseCase from "../../use_case/lister-candidats.use-case";
+import { CreerCandidat } from "../../use_case/creer-candidat.use-case";
+import { ListerCandidats } from "../../use_case/lister-candidats.use-case";
+import { SqlCandidatRepository } from "../repositories/candidat.repository";
+
+/** Register */
+const creerCandidat = new CreerCandidat(new SqlCandidatRepository())
+const listerCandidats = new ListerCandidats(new SqlCandidatRepository())
 
 export default class CandidatController {
   async create(req: Request, res: Response) {
@@ -14,7 +19,7 @@ export default class CandidatController {
         email,
       } = req.body
 
-      const savedCandidat = await creerCandidatUseCase.execute({langage, xp, email})
+      const savedCandidat = await creerCandidat.execute({langage, xp, email})
 
       res.status(201).send(savedCandidat);
     } catch (err) {
@@ -28,7 +33,7 @@ export default class CandidatController {
     const langage = typeof req.query.langage === "string" ? req.query.langage : "";
 
     try {
-      const candidats = await listerCandidatsUseCase.execute({ email: langage })
+      const candidats = await listerCandidats.execute({ email: langage })
 
       res.status(200).send(candidats);
     } catch (err) {

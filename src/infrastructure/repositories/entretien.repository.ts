@@ -1,4 +1,5 @@
-import type { Entretien, IEntretienRepository } from '../../domain/entretien.interface';
+import { Entretien } from '../../domain/entity/entretien';
+import { IEntretienRepository } from '../../domain/port/entretien-repository';
 import SQLEntretien from '../models/entretien.model';
 
 interface SearchCondition {

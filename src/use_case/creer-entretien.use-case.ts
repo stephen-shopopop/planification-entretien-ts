@@ -1,14 +1,15 @@
-import type { Candidat, ICandidatRepository } from "../domain/candidat.interface";
 import { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
 import { SqlRecruteurRepository } from "../infrastructure/repositories/recruteur.repository";
 import { AppError } from "../shared/apiError";
 import notificationService from "./notification.service";
-import type { IEntretienRepository } from "../domain/entretien.interface";
 import { SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
-import type { Recruteur, IRecruteurRepository } from "../domain/recruteur.interface";
+import { IEntretienRepository } from "../domain/port/entretien-repository";
+import { ICandidatRepository } from "../domain/port/candidat-repository";
+import { IRecruteurRepository } from "../domain/port/recruteur-repository";
+import { Candidat } from "../domain/entity/candidat";
+import { Recruteur } from "../domain/entity/recruteur";
 
 export class CréerEntretien {
-
   #sqlEntretienRepository: SqlEntretienRepository
   #sqlCandidatRepository: SqlCandidatRepository
   #sqlRecruteurRepository: SqlRecruteurRepository
@@ -39,13 +40,13 @@ export class CréerEntretien {
     return recruteur
   }
 
-  #assertAndCoerceUserLangage(recruteur: Recruteur, candidat: Candidat){
+  #assertAndCoerceUsersLangage(recruteur: Recruteur, candidat: Candidat){
     if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
       throw new AppError("Pas la même techno", 400)
     }
   }
 
-  #assertAndCoerceUserAge(recruteur: Recruteur, candidat: Candidat){
+  #assertAndCoerceUsersAge(recruteur: Recruteur, candidat: Candidat){
     if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
       throw new AppError( "Recruteur trop jeune", 400)
     }
@@ -55,13 +56,11 @@ export class CréerEntretien {
     const recruteur = await this.#sqlRecruteurRepository.retrieveById(recruteurId)
     const candidat = await this.#sqlCandidatRepository.retrieveById(candidatId)
 
-    console.table(candidatId)
-
     const candidatProfil = this.#assertCandidat(candidatId, candidat)
     const recruteurProfil = this.#assertRecruteur(recruteurId, recruteur)
 
-    this.#assertAndCoerceUserLangage(recruteurProfil, candidatProfil)
-    this.#assertAndCoerceUserAge(recruteurProfil, candidatProfil)
+    this.#assertAndCoerceUsersLangage(recruteurProfil, candidatProfil)
+    this.#assertAndCoerceUsersAge(recruteurProfil, candidatProfil)
 
     const savedEntretien = await this.#sqlEntretienRepository.save({
         candidatId,
@@ -75,9 +74,3 @@ export class CréerEntretien {
     return savedEntretien
   }
 }
-
-export default new CréerEntretien(
-  new SqlEntretienRepository(),
-  new SqlCandidatRepository(),
-  new SqlRecruteurRepository()
-)

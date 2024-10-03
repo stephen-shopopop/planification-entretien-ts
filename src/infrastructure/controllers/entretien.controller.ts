@@ -1,10 +1,19 @@
 import type { Request, Response } from 'express';
 import type SQLEntretien from '../models/entretien.model';
-import entretienService from '../../use_case/entretien.service';
-import entretienRepository from '../repositories/entretien.repository';
+import entretienRepository, { SqlEntretienRepository } from '../repositories/entretien.repository';
 import { AppError } from '../../shared/apiError';
-import listerEntretienUseCase from '../../use_case/lister-entretien.use-case';
-import creerEntretienUseCase from '../../use_case/creer-entretien.use-case';
+import { ListeEntretien } from '../../use_case/lister-entretien.use-case';
+import { CréerEntretien } from '../../use_case/creer-entretien.use-case';
+import { SqlCandidatRepository } from '../repositories/candidat.repository';
+import { SqlRecruteurRepository } from '../repositories/recruteur.repository';
+
+/** Register */
+const creerEntretien = new CréerEntretien(
+  new SqlEntretienRepository(),
+  new SqlCandidatRepository(),
+  new SqlRecruteurRepository()
+)
+const listeEntretien = new ListeEntretien(new SqlEntretienRepository())
 
 export default class EntretienController {
   async create(req: Request, res: Response) {
@@ -21,7 +30,7 @@ export default class EntretienController {
         throw new AppError( "Pas les mêmes horaires!", 400)
       }
 
-      const savedEntretien = await creerEntretienUseCase.execute(recruteurId, candidatId, horaire)
+      const savedEntretien = await creerEntretien.execute(recruteurId, candidatId, horaire)
 
       res.status(201).send(savedEntretien);
     } catch (err) {
@@ -33,7 +42,7 @@ export default class EntretienController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const entretiens = await listerEntretienUseCase.execute();
+      const entretiens = await listeEntretien.execute();
 
       res.status(200).send(entretiens);
     } catch (err) {

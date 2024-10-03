@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import SQLCandidat from '../models/candidat.model';
-import type { Candidat, ICandidatRepository } from "../../domain/candidat.interface";
+import { Candidat } from "../../domain/entity/candidat";
+import { ICandidatRepository } from "../../domain/port/candidat-repository";
 
 
 interface SearchCondition {

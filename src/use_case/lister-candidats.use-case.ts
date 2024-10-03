@@ -1,4 +1,4 @@
-import type { ICandidatRepository } from "../domain/candidat.interface";
+import { ICandidatRepository } from "../domain/port/candidat-repository";
 import { SqlCandidatRepository } from "../infrastructure/repositories/candidat.repository";
 
 export class ListerCandidats {
@@ -13,5 +13,3 @@ export class ListerCandidats {
     return await this.#sqlCandidatRepository.retrieveAll(searchParams);
   }
 }
-
-export default new ListerCandidats(new SqlCandidatRepository())

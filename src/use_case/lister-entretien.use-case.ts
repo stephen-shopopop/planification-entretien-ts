@@ -1,4 +1,4 @@
-import type { IEntretienRepository } from "../domain/entretien.interface";
+import { IEntretienRepository } from "../domain/port/entretien-repository";
 import {  SqlEntretienRepository } from "../infrastructure/repositories/entretien.repository";
 
 export class ListeEntretien {
@@ -15,5 +15,3 @@ export class ListeEntretien {
     return await this.#sqlEntretienRepository.retrieveAll();
   }
 }
-
-export default new ListeEntretien(new SqlEntretienRepository())
