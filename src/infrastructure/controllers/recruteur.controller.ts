@@ -1,7 +1,21 @@
 import type { Request, Response } from "express";
 import type SQLRecruteur from '../models/recruteur.model';
-import recruteurService from '../../use_case/recruteur.service';
 import { AppError } from "../../shared/apiError";
+import { CreerRecruteur } from "../../use_case/creer-recruteur.use-case";
+import { SqlRecruteurRepository } from "../repositories/recruteur.repository";
+import { ListeRecruteurs } from "../../use_case/lister-recruteur.use-case";
+import { MettreAJourRecruteur } from "../../use_case/mettre-a-jour-recruteur.use-case";
+import { SupprimerRecruteur } from "../../use_case/supprimer-recruteur.use-case";
+import { SupprimerTousLesRecruteurs } from "../../use_case/supprimer-tous-les-recruteurs.use-case";
+import { TrouverRecruteur } from "../../use_case/trouver-recruteur.use-case";
+
+/** Register */
+const creerRecruteur =  new CreerRecruteur(new SqlRecruteurRepository())
+const listerRecruteur = new ListeRecruteurs(new SqlRecruteurRepository())
+const mettreAJourRecruteur = new MettreAJourRecruteur(new SqlRecruteurRepository())
+const supprimerRecruteur = new SupprimerRecruteur(new SqlRecruteurRepository())
+const supprimerTousLesRecruteurs = new SupprimerTousLesRecruteurs(new SqlRecruteurRepository())
+const trouverRecruteur = new TrouverRecruteur(new SqlRecruteurRepository())
 
 export default class RecruteurController {
   async create(req: Request, res: Response) {
@@ -12,7 +26,7 @@ export default class RecruteurController {
         email,
       } = req.body
 
-      const savedRecruteur = await recruteurService.save({langage, xp, email});
+      const savedRecruteur = await creerRecruteur.execute({langage, xp, email});
 
       res.status(201).send(savedRecruteur);
     } catch (err) {
@@ -26,7 +40,7 @@ export default class RecruteurController {
     const langage = typeof req.query.langage === "string" ? req.query.langage : "";
 
     try {
-      const recruteurs = await recruteurService.retrieveAll({ email: langage });
+      const recruteurs = await listerRecruteur.execute({ email: langage });
 
       res.status(200).send(recruteurs);
     } catch (err) {
@@ -40,7 +54,7 @@ export default class RecruteurController {
     const id: number = parseInt(req.params.id);
 
     try {
-      const recruteur = await recruteurService.retrieveById(id);
+      const recruteur = await trouverRecruteur.execute(id);
 
       if (recruteur) res.status(200).send(recruteur);
       else
@@ -59,7 +73,7 @@ export default class RecruteurController {
     recruteur.id = parseInt(req.params.id);
 
     try {
-      const num = await recruteurService.update(recruteur);
+      const num = await mettreAJourRecruteur.execute(recruteur);
 
       if (num == 1) {
         res.status(204).send({
@@ -81,7 +95,7 @@ export default class RecruteurController {
     const id: number = parseInt(req.params.id);
 
     try {
-      const num = await recruteurService.delete(id);
+      const num = await supprimerRecruteur.execute(id);
 
       if (num == 1) {
         res.status(204).send({
@@ -101,7 +115,7 @@ export default class RecruteurController {
 
   async deleteAll(req: Request, res: Response) {
     try {
-      const num = await recruteurService.deleteAll();
+      const num = await supprimerTousLesRecruteurs.execute();
 
       res.status(204).send({ message: `${num} Recruteurs were deleted successfully!` });
     } catch (err) {
