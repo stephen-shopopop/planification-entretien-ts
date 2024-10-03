@@ -9,7 +9,7 @@ import type { Candidat } from "../domain/entity/candidat";
 import type { Recruteur } from "../domain/entity/recruteur";
 import type { INotificationRepository } from "../domain/port/notification-repository";
 import type { NotificationService } from "../infrastructure/repositories/notifications.repository";
-import { Entretien } from "../domain/entity/entretien";
+import { Entretien, EntretienBuilder } from "../domain/entity/entretien";
 
 export class CréerEntretien {
   #sqlEntretienRepository: SqlEntretienRepository
@@ -67,17 +67,14 @@ export class CréerEntretien {
     const recruteur = await this.#sqlRecruteurRepository.retrieveById(recruteurId)
     const candidat = await this.#sqlCandidatRepository.retrieveById(candidatId)
 
-    
     const candidatProfil = this.#assertCandidat(candidatId, candidat)
     const recruteurProfil = this.#assertRecruteur(recruteurId, recruteur)
 
-    Entretien.plannifier(candidatProfil, recruteurProfil)
+    const entretien = new EntretienBuilder(candidatId, recruteurId, horaire)
 
-    const savedEntretien = await this.#sqlEntretienRepository.save(new Entretien(
-        candidatId,
-        recruteurId,
-        horaire
-    ));
+    entretien.plannifier(candidatProfil, recruteurProfil)
+
+    const savedEntretien = await this.#sqlEntretienRepository.save(entretien.snapshot());
 
     await this.#notificationRepository.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
     await this.#notificationRepository.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');

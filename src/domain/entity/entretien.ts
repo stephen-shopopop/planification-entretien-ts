@@ -14,14 +14,24 @@ export class Entretien {
   horaire?: string;
   candidatId?: number;
   recruteurId?: number;
+}
 
-  constructor(candidatId: number, recruteurId: number, horaire?: string ){
-    this.horaire = horaire
-    this.candidatId = candidatId
-    this.recruteurId = recruteurId
+
+export class EntretienBuilder {
+
+  #Entretien: Entretien = {}
+
+  constructor(
+    candidatId: number,
+    recruteurId: number, 
+    horaire?: string
+  ){
+    this.#Entretien.horaire = horaire
+    this.#Entretien.candidatId = candidatId
+    this.#Entretien.recruteurId = recruteurId
   }
 
-  static plannifier(candidat: Candidat, recruteur: Recruteur){
+  plannifier(candidat: Candidat, recruteur: Recruteur){
     if (recruteur.langage && candidat?.langage && recruteur.langage != candidat.langage) {
       throw new AppError("Pas la même techno", 400)
     }
@@ -29,5 +39,9 @@ export class Entretien {
     if (recruteur?.xp && candidat?.xp && recruteur.xp < candidat.xp) {
       throw new AppError( "Recruteur trop jeune", 400)
     }
+  }
+
+  snapshot(){
+    return this.#Entretien
   }
 }
