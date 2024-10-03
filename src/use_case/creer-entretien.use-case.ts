@@ -74,7 +74,7 @@ export class CréerEntretien {
 
     entretien.plannifier(candidatProfil, recruteurProfil)
 
-    const savedEntretien = await this.#sqlEntretienRepository.save(entretien.snapshot());
+    const savedEntretien = await this.#sqlEntretienRepository.save(entretien.toJSON());
 
     await this.#notificationRepository.envoyerEmailDeConfirmationAuCandidat(candidat?.email || '');
     await this.#notificationRepository.envoyerEmailDeConfirmationAuRecruteur(recruteur?.email || '');

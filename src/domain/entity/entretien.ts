@@ -41,7 +41,7 @@ export class EntretienBuilder {
     }
   }
 
-  snapshot(){
-    return this.#Entretien
+  toJSON(){
+    return Object.freeze(this.#Entretien)
   }
 }
