@@ -25,12 +25,7 @@ export default class EntretienController {
         horaire
       } = req.body
 
-      // Assert
-      if (disponibiliteRecruteur !== horaire) {
-        throw new AppError( "Pas les mêmes horaires!", 400)
-      }
-
-      const savedEntretien = await creerEntretien.execute(recruteurId, candidatId, horaire)
+      const savedEntretien = await creerEntretien.execute({ recruteurId, candidatId, horaire, disponibiliteRecruteur });
 
       res.status(201).send(savedEntretien);
     } catch (err) {

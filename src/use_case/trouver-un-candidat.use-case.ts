@@ -1,6 +1,6 @@
 import type { ICandidatRepository } from "../domain/port/candidat-repository";
 
-export class ListerCandidats {
+export class TrouverUnCandidat {
 
   #sqlCandidatRepository: ICandidatRepository
 
@@ -8,7 +8,7 @@ export class ListerCandidats {
       this.#sqlCandidatRepository = candidateRepository
   }
 
-  async execute (searchParams: { email?: string }){
-    return await this.#sqlCandidatRepository.retrieveAll(searchParams);
+  async execute (candidatId: number){
+    return await this.#sqlCandidatRepository.retrieveById(candidatId);
   }
 }

@@ -1,6 +1,7 @@
+import type { Candidat } from "../domain/entity/candidat";
 import type { ICandidatRepository } from "../domain/port/candidat-repository";
 
-export class ListerCandidats {
+export class MettreAJourCandidat {
 
   #sqlCandidatRepository: ICandidatRepository
 
@@ -8,7 +9,7 @@ export class ListerCandidats {
       this.#sqlCandidatRepository = candidateRepository
   }
 
-  async execute (searchParams: { email?: string }){
-    return await this.#sqlCandidatRepository.retrieveAll(searchParams);
+  async execute (candidat: Candidat){
+    return await this.#sqlCandidatRepository.update(candidat);
   }
 }

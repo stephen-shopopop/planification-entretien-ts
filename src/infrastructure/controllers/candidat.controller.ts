@@ -1,14 +1,21 @@
 import type { Request, Response } from "express";
 import type SQLCandidat from '../models/candidat.model';
 import { AppError } from "../../shared/apiError";
-import candidatService from "../../use_case/candidat.service";
 import { CreerCandidat } from "../../use_case/creer-candidat.use-case";
 import { ListerCandidats } from "../../use_case/lister-candidats.use-case";
 import { SqlCandidatRepository } from "../repositories/candidat.repository";
+import { MettreAJourCandidat } from "../../use_case/mettre-a-jour-candidat.use-case";
+import { SupprimerCandidat } from "../../use_case/supprimer-candidat.use-case";
+import { SupprimerTousLesCandidats } from "../../use_case/supprimer-tous-les-candidats.use-case";
+import { TrouverUnCandidat } from "../../use_case/trouver-un-candidat.use-case";
 
 /** Register */
 const creerCandidat = new CreerCandidat(new SqlCandidatRepository())
 const listerCandidats = new ListerCandidats(new SqlCandidatRepository())
+const mettreAJourUnCandidat = new MettreAJourCandidat(new SqlCandidatRepository())
+const supprimerCandidat = new SupprimerCandidat(new SqlCandidatRepository())
+const supprimerTousLesCandidats = new SupprimerTousLesCandidats(new SqlCandidatRepository())
+const trouverUnCandidat = new TrouverUnCandidat(new SqlCandidatRepository())
 
 export default class CandidatController {
   async create(req: Request, res: Response) {
@@ -47,7 +54,7 @@ export default class CandidatController {
     const id: number = parseInt(req.params.id);
 
     try {
-      const candidat = await candidatService.retrieveById(id);
+      const candidat = await trouverUnCandidat.execute(id);
 
       if (candidat) res.status(200).send(candidat);
       else
@@ -66,7 +73,7 @@ export default class CandidatController {
     candidat.id = parseInt(req.params.id);
 
     try {
-      const num = await candidatService.update(candidat);
+      const num = await mettreAJourUnCandidat.execute(candidat);
 
       if (num == 1) {
         res.status(204).send({
@@ -88,7 +95,7 @@ export default class CandidatController {
     const id: number = parseInt(req.params.id);
 
     try {
-      const num = await candidatService.delete(id);
+      const num = await supprimerCandidat.execute(id);
 
       if (num == 1) {
         res.status(204).send({
@@ -108,7 +115,7 @@ export default class CandidatController {
 
   async deleteAll(req: Request, res: Response) {
     try {
-      const num = await candidatService.deleteAll();
+      const num = await supprimerTousLesCandidats.execute();
 
       res.status(204).send({ message: `${num} Candidats were deleted successfully!` });
     } catch (err) {

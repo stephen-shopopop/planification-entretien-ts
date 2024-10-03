@@ -8,6 +8,7 @@ import { ICandidatRepository } from "../domain/port/candidat-repository";
 import { IRecruteurRepository } from "../domain/port/recruteur-repository";
 import { Candidat } from "../domain/entity/candidat";
 import { Recruteur } from "../domain/entity/recruteur";
+import { Entretien } from "../domain/entity/entretien";
 
 export class CréerEntretien {
   #sqlEntretienRepository: SqlEntretienRepository
@@ -22,6 +23,12 @@ export class CréerEntretien {
     this.#sqlEntretienRepository = sqlEntretienRepository
     this.#sqlCandidatRepository = sqlCandidatRepository
     this.#sqlRecruteurRepository = sqlRecruteurRepository
+  }
+
+  #assertRecruteurDisponility(disponibiliteRecruteur?: string, horaire?: string){
+    if (disponibiliteRecruteur !== horaire) {
+      throw new AppError( "Pas les mêmes horaires!", 400)
+    }
   }
 
   #assertCandidat(candidatId: number, candidat: Candidat | null) {
@@ -52,7 +59,19 @@ export class CréerEntretien {
     }
   }
 
-  async execute (recruteurId: number, candidatId: number, horaire?: string){
+  async execute ({
+    recruteurId,
+    candidatId,
+    horaire,
+    disponibiliteRecruteur
+  }: {
+    horaire?: string;
+    candidatId: number;
+    recruteurId: number;
+    disponibiliteRecruteur?: string 
+  }){
+    this.#assertRecruteurDisponility(disponibiliteRecruteur, horaire)    
+
     const recruteur = await this.#sqlRecruteurRepository.retrieveById(recruteurId)
     const candidat = await this.#sqlCandidatRepository.retrieveById(candidatId)
 
