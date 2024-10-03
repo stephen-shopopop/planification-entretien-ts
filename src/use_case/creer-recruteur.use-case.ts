@@ -1,4 +1,4 @@
-import type { Recruteur } from "../domain/entity/recruteur";
+import { RecruteurBuilder, type Recruteur } from "../domain/entity/recruteur";
 import type { IRecruteurRepository } from "../domain/port/recruteur-repository";
 import { AppError } from "../shared/apiError";
 
@@ -17,10 +17,8 @@ export class CreerRecruteur {
         throw new AppError('Content can not be empty!', 400)
     }
 
-    return await this.#sqlRecruteurRepository.save({
-        email,
-        langage,
-        xp
-    });
+    const recruteur = new RecruteurBuilder(langage, email, xp)
+
+    return await this.#sqlRecruteurRepository.save(recruteur.toJSON());
   }
 }

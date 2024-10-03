@@ -1,4 +1,4 @@
-import type { Candidat } from "../domain/entity/candidat";
+import { CandidatBuilder, type Candidat } from "../domain/entity/candidat";
 import type { ICandidatRepository } from "../domain/port/candidat-repository";
 import { AppError } from "../shared/apiError";
 
@@ -17,10 +17,8 @@ export class CreerCandidat {
         throw new AppError('Content can not be empty!', 400)
     }
 
-    return await this.#sqlCandidatRepository.save({
-      langage,
-      xp, 
-      email
-    });
+    const candidat = new CandidatBuilder(langage, email, xp)
+
+    return await this.#sqlCandidatRepository.save(candidat.toJSON());
   }
 }

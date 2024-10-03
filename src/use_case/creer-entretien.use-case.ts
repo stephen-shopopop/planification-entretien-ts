@@ -9,7 +9,7 @@ import type { Candidat } from "../domain/entity/candidat";
 import type { Recruteur } from "../domain/entity/recruteur";
 import type { INotificationRepository } from "../domain/port/notification-repository";
 import type { NotificationService } from "../infrastructure/repositories/notifications.repository";
-import { Entretien, EntretienBuilder } from "../domain/entity/entretien";
+import { EntretienBuilder } from "../domain/entity/entretien";
 
 export class CréerEntretien {
   #sqlEntretienRepository: SqlEntretienRepository
