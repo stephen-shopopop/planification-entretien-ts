@@ -33,6 +33,18 @@ describe("Candidat", () => {
         expect(candidat).not.toBeNull();
     });
 
+    it("Un candidat n'est pas crée si le domain de son email est neosoft.fr", async () => {
+        // when
+        const response = await request(app)
+            .post('/api/candidat')
+            .send({langage: "java", email: "candidat@neosoft.fr", xp: 5})
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json');
+
+        // then
+        expect(response.statusCode).toBe(400);
+    })
+
     it("Un candidat n'est pas crée quand sa techno principale est vide", async () => {
         // when
         const response = await request(app)
