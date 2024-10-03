@@ -7,6 +7,7 @@ import { CréerEntretien } from '../../use_case/creer-entretien.use-case';
 import { SqlCandidatRepository } from '../repositories/candidat.repository';
 import { SqlRecruteurRepository } from '../repositories/recruteur.repository';
 import { notificationRepository } from '../repositories/notifications.repository';
+import { TrouverUnEntretien } from '../../use_case/trouver-un-entretien.use-case';
 
 /** Register */
 const creerEntretien = new CréerEntretien(
@@ -16,6 +17,11 @@ const creerEntretien = new CréerEntretien(
   notificationRepository
 )
 const listeEntretien = new ListeEntretien(new SqlEntretienRepository())
+const trouverUnEntretien = new TrouverUnEntretien(
+  new SqlEntretienRepository(),
+  new SqlCandidatRepository(),
+  new SqlRecruteurRepository()
+)
 
 export default class EntretienController {
   async create(req: Request, res: Response) {
@@ -53,7 +59,7 @@ export default class EntretienController {
     const id: number = parseInt(req.params.id);
 
     try {
-      const entretien = await entretienRepository.retrieveById(id);
+      const entretien = await trouverUnEntretien.execute(id);
 
       if (entretien) res.status(200).send(entretien);
       else

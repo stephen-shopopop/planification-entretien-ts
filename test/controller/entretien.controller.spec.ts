@@ -233,6 +233,8 @@ describe('Entretien', () => {
         expect(response.body.candidatId).toEqual(candidatId);
         expect(response.body.recruteurId).toEqual(recruteurId);
         expect(response.body.horaire).toEqual('2024-05-31T18:00:00.000Z');
+        expect(response.body.candidatEmail).toEqual('candidat@mail.com');
+        expect(response.body.recruteurEmail).toEqual('recruteur@mail.com');
     });
 
     it("Ne trouve pas un entretien inexistant", async () => {
