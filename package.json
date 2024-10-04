@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "typecheck": "tsc --pretty --noEmit",
-    "test": "npm run build && jest -i --detectOpenHandles --runInBand",
+    "test": "npm run build && jest -i --detectOpenHandles --runInBand --runInBand --forceExit",
     "build": "tsc",
     "dev": "node ./build/src/server.js",
     "start": "tsc && npm run dev",
