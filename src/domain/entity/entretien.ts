@@ -1,10 +1,3 @@
-// export interface Entretien {
-//   id?: number;
-//   horaire?: string;
-//   candidatId?: number;
-//   recruteurId?: number;
-// }
-
 import { AppError } from "../../shared/apiError";
 import type { Candidat } from "./candidat";
 import type { Recruteur } from "./recruteur";
