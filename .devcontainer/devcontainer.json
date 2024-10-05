@@ -2,10 +2,6 @@
   "name": "project-plannification-entretien",
   "image": "mcr.microsoft.com/devcontainers/universal:2",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "pnpmVersion": "none",
-      "installYarnUsingApt": false,
-      "nodeGypDependencies": false
-    }
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-node:0": {}
   }
 }
