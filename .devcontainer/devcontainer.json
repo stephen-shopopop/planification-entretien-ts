@@ -1,0 +1,12 @@
+{
+  "name": "project-plannification-entretien",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "pnpmVersion": "none",
+      "installYarnUsingApt": false
+    }
+  }
+}
